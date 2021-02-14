@@ -9,6 +9,10 @@ twilio = "*"
 requests = "*"
 bs4 = "*"
 sqlalchemy = "*"
+deluge = "*"
+python-qbittorrent = "*"
+python-dotenv = "*"
+fastapi = "*"
 
 [dev-packages]
 
