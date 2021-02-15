@@ -9,8 +9,7 @@ load_dotenv()
 
 class FTPClient:
     def __init__(self):
-        self.server_host: str = None
-        self.server_port: str = None
+        self.source_addresses = ("127.0.0.1", 21)
         self.server_ftp_dir: str = None
         self.torrent_dir: str = None
         self.ftp_user: str = os.environ.get("FTP_LOGIN")
@@ -35,8 +34,7 @@ class FTPClient:
     def connect_client(self) -> None:
         try:
             client = FTP(
-                host=self.server_host,
-                port=self.server_port,
+                source_address=self.source_addresses,
                 user=self.ftp_user,
                 passwd=self.ftp_pass,
             )

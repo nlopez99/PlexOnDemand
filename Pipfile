@@ -13,6 +13,7 @@ deluge = "*"
 python-qbittorrent = "*"
 python-dotenv = "*"
 fastapi = "*"
+uvicorn = "*"
 
 [dev-packages]
 
