@@ -14,8 +14,9 @@ python-qbittorrent = "*"
 python-dotenv = "*"
 fastapi = "*"
 uvicorn = "*"
+python-multipart = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"

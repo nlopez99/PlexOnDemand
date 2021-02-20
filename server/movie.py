@@ -7,6 +7,7 @@ class MovieSearch:
     def __init__(self):
         self.base_api_url: str = "https://yts.mx/api/v2/"
         self.movies_endpoint: str = "list_movies.json"
+        self.download_dir: str = "/media"
 
     def get_movie_url(self, movie_title: str) -> str:
         """ Return Movie Magnet URL from Movie ID """
@@ -35,7 +36,7 @@ class MovieSearch:
             content_header = response.headers.get("content-disposition")
             dirty_name = re.findall("filename=(.+)", content_header)[0]
             filename = "_".join(dirty_name.split()).strip('"')
-            filepath = os.path.join("/home/trident/Downloads", filename)
+            filepath = os.path.join(self.download_dir, filename)
             with open(filepath, "wb") as file:
                 file.write(response.content)
 

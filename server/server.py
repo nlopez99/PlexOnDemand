@@ -1,7 +1,8 @@
 from fastapi import FastAPI
-from app.movie import MovieSearch
-from app.ftp import FTPClient
-from app.utils import clean_movie_title
+from server.movie import MovieSearch
+
+# from server.ftp import FTPClient
+from server.utils import clean_movie_title
 
 app = FastAPI()
 movie_search = MovieSearch()
