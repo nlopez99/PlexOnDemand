@@ -32,7 +32,7 @@ services:
       context: .
       dockerfile: server/Dockerfile
     volumes:
-      - "/home/trident/Downloads:/media"
+      - "./downloads:/media"
 
     ports:
       - 5000:5000
