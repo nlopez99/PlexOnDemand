@@ -9,7 +9,6 @@ services:
       - TZ=America/Toronto
       - WEBUI_PORT=8080
     volumes:
-      # - /path/to/appdata/config:/config
       - /home/trident/Downloads:/downloads
     ports:
       - 6881:6881
@@ -27,24 +26,13 @@ services:
     links:
       - client
 
-  server:
-    build:
-      context: .
-      dockerfile: server/Dockerfile
+  client:
+    build: .
     volumes:
       - "./downloads:/media"
 
     ports:
       - 5000:5000
 
-    command: uvicorn server.server:app --host 0.0.0.0 --port 5000
-
-  client:
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-
-    ports:
-      - 5001:5001
-
-    command: uvicorn client.client:app --host 0.0.0.0 --port 5001
+  redis:
+    image: "redis:alpine"

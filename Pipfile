@@ -15,8 +15,14 @@ python-dotenv = "*"
 fastapi = "*"
 uvicorn = "*"
 python-multipart = "*"
+black = "*"
+redis = "*"
 
 [dev-packages]
+black = "==20.8b1"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9.0"
+
+[pipenv]
+allow_prereleases = true
