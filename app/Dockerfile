@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-LABEL name="PlexOnDemandClient" maintainer="Nino Lopez<ninolopez91@gmail.com>"
+LABEL name="BoneBolts" maintainer="Nino Lopez<ninolopez91@gmail.com>"
 
 ARG APP_ROOT=/usr/src/app/
 

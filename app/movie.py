@@ -4,8 +4,11 @@ import os
 from typing import Dict, Tuple
 
 
-class MovieSearch:
+class MovieService:
+    """ Class  """
+
     def __init__(self):
+        """ Initializes Endpoint and Download Directory """
         self.base_api_url: str = "https://yts.mx/api/v2/"
         self.movies_endpoint: str = "list_movies.json"
         self.download_dir: str = "/media"
@@ -35,9 +38,8 @@ class MovieSearch:
 
     def get_movie_data(self, movie_json: Dict) -> Tuple[str, str]:
         """ Gets Movie Full Name and Cover Picture Returns as Tuple """
-        first_movie = movie_json
-        movie_title = first_movie["title_long"]
-        movie_cover_url = first_movie["medium_cover_image"]
+        movie_title = movie_json["title_long"]
+        movie_cover_url = movie_json["medium_cover_image"]
         return movie_title, movie_cover_url
 
     def download_torrent_file(self, torrent_url: str) -> bool:

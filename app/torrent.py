@@ -32,3 +32,20 @@ class TorrentClient:
         """ Adds .torrent file to Qbittorent Downloads """
         with open(filepath, "rb") as torrent_file:
             self.client.download_from_file(torrent_file)
+
+    def get_status(self) -> List[Tuple[str, str, str]]:
+        torrents = self.client.torrents(filter="downloading")
+        torrents_statuses = []
+        for torrent in torrents:
+            name = torrent["name"]
+
+            amount_left = torrent["amount_left"]
+            downloaded = torrent["downloaded"]
+            pct_rounded = round((downloaded / amount_left) * 100, 2)
+
+            # convert to min from seconds
+            est_time = torrent["eta"]
+            time_left = round(est_time / 60, 2)
+
+            torrents_statuses.append((name, f"{pct_rounded}%", f"{time_left} minutes"))
+        return torrents_statuses
