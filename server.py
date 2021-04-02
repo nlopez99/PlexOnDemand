@@ -45,7 +45,7 @@ async def search_movies(request: Request) -> Response:
         movie_title: str = clean_movie_title(movie_title=movie_title)
         movie: Dict = movie_service.search_movies(movie_title=movie_title)
         if not movie:
-            response = create_movie_response(
+            response: Response = create_movie_response(
                 message="Sorry can't find this movie:/ Please Try to Match Your Search as Close as Possible"
             )
             return response
@@ -53,7 +53,7 @@ async def search_movies(request: Request) -> Response:
 
         cache.set("movie", title)
 
-        response = create_movie_response(
+        response: Response = create_movie_response(
             message=f"Were you looking for {title}? (yes/no)",
             cover_url=cover_url,
         )
@@ -71,23 +71,25 @@ async def search_movies(request: Request) -> Response:
 
             try:
                 torrent_client.download_torrent(filepath=movie_filepath)
-                response = create_movie_response(
+                response: Response = create_movie_response(
                     message=f"Downloading {str(movie_title, 'utf-8')} Now:), please text 'status' for further updates!"
                 )
 
             except Exception as e:
-                response = create_movie_response(
+                response: Response = create_movie_response(
                     message=f"Error Downloading {movie_title}, please text Nino this: {str(e)}"
                 )
 
             return response
 
         else:
-            response = create_movie_response(message="Sorry something went wrong:/")
+            response: Response = create_movie_response(
+                message="Sorry something went wrong:/"
+            )
             return response
 
     elif "no" == possible_no:
-        response = create_movie_response(
+        response: Response = create_movie_response(
             message="Sorry:/ Please Try to Match Your Search as Close as Possible"
         )
         return response
@@ -98,14 +100,14 @@ async def search_movies(request: Request) -> Response:
         for name, percent, time_left in status:
             current_status += f"{name}: {percent} ({time_left})\n"
 
-        response = create_movie_response(
+        response: Response = create_movie_response(
             message=current_status,
         )
 
         return response
 
     else:
-        response = create_movie_response(
+        response: Response = create_movie_response(
             message="Sorry Unknown Command:/ Usage: 'Search \"Movie Title\"' or 'Status'"
         )
         return response
