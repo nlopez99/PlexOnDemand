@@ -1,3 +1,5 @@
+""" Movie Service """
+
 import os
 import re
 from typing import Dict, Tuple

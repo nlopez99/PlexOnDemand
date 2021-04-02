@@ -54,7 +54,8 @@ async def search_movies(request: Request) -> Response:
         cache.set("movie", title)
 
         response = create_movie_response(
-            message=f"Were you looking for {title}? (yes/no)", cover_url=cover_url,
+            message=f"Were you looking for {title}? (yes/no)",
+            cover_url=cover_url,
         )
 
         return response
@@ -97,12 +98,14 @@ async def search_movies(request: Request) -> Response:
         for name, percent, time_left in status:
             current_status += f"{name}: {percent} ({time_left})\n"
 
-        response = create_movie_response(message=current_status,)
+        response = create_movie_response(
+            message=current_status,
+        )
 
         return response
 
     else:
         response = create_movie_response(
-            message="Sorry Unknown Command:/ Usage: 'Search Movie Title' or 'Status'"
+            message="Sorry Unknown Command:/ Usage: 'Search \"Movie Title\"' or 'Status'"
         )
         return response
