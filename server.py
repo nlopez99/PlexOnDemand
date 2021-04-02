@@ -19,6 +19,7 @@ torrent_client = TorrentClient()
 
 
 def create_movie_response(message: str, cover_url: str = "") -> MessagingResponse:
+    """ Creates a Twilio Response to send back to user """
     messaging_response = MessagingResponse()
     msg = messaging_response.message(message)
     if cover_url:
@@ -28,21 +29,22 @@ def create_movie_response(message: str, cover_url: str = "") -> MessagingRespons
 
 @app.post("/movies")
 async def search_movies(request: Request) -> Response:
+    """ Endpoint that Twilio Webhook will hit. Parses Text message body. """
 
     message_data = await request.form()
     body: str = message_data["Body"].lower()
 
-    possible_search: str = body[:6]
-    possible_yes: str = body[:3]
-    possible_no: str = body[:2]
-    possible_status: str = body[:5]
+    search: bool = body[:6] == "search"
+    yes: bool = body[:3] == "yes"
+    no: bool = body[:2] == "no"
+    status: bool = body[:5] == "status"
 
     # parse body for what user is trying to do
-    if "search" == possible_search:
+    if search:
 
         # everything after `search` keyword
-        movie_title: str = body[7:]
-        movie_title: str = clean_movie_title(movie_title=movie_title)
+        dirty_movie_title: str = body[7:]
+        movie_title: str = clean_movie_title(movie_title=dirty_movie_title)
         movie: Dict = movie_service.search_movies(movie_title=movie_title)
         if not movie:
             response: Response = create_movie_response(
@@ -60,7 +62,7 @@ async def search_movies(request: Request) -> Response:
 
         return response
 
-    elif "yes" == possible_yes:
+    elif yes:
         movie_title = cache.get("movie")
         movie_json: Dict = movie_service.search_movies(movie_title=movie_title)
 
@@ -88,13 +90,13 @@ async def search_movies(request: Request) -> Response:
             )
             return response
 
-    elif "no" == possible_no:
+    elif no:
         response: Response = create_movie_response(
             message="Sorry:/ Please Try to Match Your Search as Close as Possible"
         )
         return response
 
-    elif possible_status:
+    elif status:
         current_status = ""
         status = torrent_client.get_status()
         for name, percent, time_left in status:
