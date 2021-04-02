@@ -1,15 +1,11 @@
-import os
-import requests
+from typing import Dict
+
+import redis
 from app.movie import MovieService
-from app.ftp import FTPClient
 from app.torrent import TorrentClient
 from app.utils import clean_movie_title
-from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Response, HTTPException
-import redis
-from twilio.twiml.messaging_response import MessagingResponse, Message
-from typing import Dict, List, Optional, Tuple
-
+from fastapi import FastAPI, Request, Response
+from twilio.twiml.messaging_response import MessagingResponse
 
 # Services
 
@@ -58,8 +54,7 @@ async def search_movies(request: Request) -> Response:
         cache.set("movie", title)
 
         response = create_movie_response(
-            message=f"Were you looking for {title}? (yes/no)",
-            cover_url=cover_url,
+            message=f"Were you looking for {title}? (yes/no)", cover_url=cover_url,
         )
 
         return response
@@ -102,9 +97,7 @@ async def search_movies(request: Request) -> Response:
         for name, percent, time_left in status:
             current_status += f"{name}: {percent} ({time_left})\n"
 
-        response = create_movie_response(
-            message=current_status,
-        )
+        response = create_movie_response(message=current_status,)
 
         return response
 

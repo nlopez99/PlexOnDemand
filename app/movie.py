@@ -1,11 +1,12 @@
-import requests
-import re
 import os
+import re
 from typing import Dict, Tuple
+
+import requests
 
 
 class MovieService:
-    """ Class  """
+    """ Class for searching and downloading movies """
 
     def __init__(self):
         """ Initializes Endpoint and Download Directory """

@@ -1,8 +1,10 @@
+""" Deprecated for now until its refactored for remote machines. """
+
 import os
 from ftplib import FTP, error_perm, error_reply
-from dotenv import load_dotenv
 from socket import error as SocketError
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -19,7 +21,7 @@ class FTPClient:
     def __enter__(self):
         self.client.getwelcome()
 
-    def __exit__(self):
+    def __exit__(self, exception_type, exception_value, traceback):
         self.client.close()
 
     @property

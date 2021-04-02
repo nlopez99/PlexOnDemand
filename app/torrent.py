@@ -1,13 +1,15 @@
+import os
+from typing import List, Tuple
+
 from dotenv import load_dotenv
 from qbittorrent import Client
-from typing import Tuple, List
-import os
-
 
 load_dotenv()
 
 
 class TorrentClient:
+    """ Class to Interface with the Qbittorent Client """
+
     def __init__(self):
         self.download_dir: str = "/media"
         self.client: Client = Client("http://qbittorrent:8080")
@@ -34,6 +36,7 @@ class TorrentClient:
             self.client.download_from_file(torrent_file)
 
     def get_status(self) -> List[Tuple[str, str, str]]:
+        """ Gets Name, Percent Downloaded, and Time Left for Dowloading Torrents """
         torrents = self.client.torrents(filter="downloading")
         torrents_statuses = []
         for torrent in torrents:
@@ -48,4 +51,5 @@ class TorrentClient:
             time_left = round(est_time / 60, 2)
 
             torrents_statuses.append((name, f"{pct_rounded}%", f"{time_left} minutes"))
+
         return torrents_statuses
