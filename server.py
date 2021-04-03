@@ -18,7 +18,7 @@ torrent_client = TorrentClient()
 # Utility Functions
 
 
-def create_movie_response(message: str, cover_url: str = "") -> MessagingResponse:
+def create_movie_response(message: str, cover_url: str = "") -> Response:
     """ Creates a Twilio Response to send back to user """
     messaging_response = MessagingResponse()
     msg = messaging_response.message(message)
@@ -37,7 +37,7 @@ async def search_movies(request: Request) -> Response:
     search: bool = body[:6] == "search"
     yes: bool = body[:3] == "yes"
     no: bool = body[:2] == "no"
-    status: bool = body[:5] == "status"
+    status: bool = body[:6] == "status"
 
     # parse body for what user is trying to do
     if search:
@@ -46,13 +46,14 @@ async def search_movies(request: Request) -> Response:
         dirty_movie_title: str = body[7:]
         movie_title: str = clean_movie_title(movie_title=dirty_movie_title)
         movie: Dict = movie_service.search_movies(movie_title=movie_title)
+
         if not movie:
             response: Response = create_movie_response(
                 message="Sorry can't find this movie:/ Please Try to Match Your Search as Close as Possible"
             )
             return response
-        title, cover_url = movie_service.get_movie_data(movie_json=movie)
 
+        title, cover_url = movie_service.get_movie_data(movie_json=movie)
         cache.set("movie", title)
 
         response: Response = create_movie_response(
@@ -63,42 +64,46 @@ async def search_movies(request: Request) -> Response:
         return response
 
     elif yes:
+        # case for when user wants to download movie
         movie_title = cache.get("movie")
         movie_json: Dict = movie_service.search_movies(movie_title=movie_title)
-
         torrent_url: str = movie_service.get_movie_url(movie_json=movie_json)
         movie_filepath: bool = movie_service.download_torrent_file(torrent_url)
 
+        # if there's a torrent file available for download
         if movie_filepath:
 
             try:
                 torrent_client.download_torrent(filepath=movie_filepath)
-                response: Response = create_movie_response(
-                    message=f"Downloading {str(movie_title, 'utf-8')} Now:), please text 'status' for further updates!"
-                )
 
             except Exception as e:
                 response: Response = create_movie_response(
                     message=f"Error Downloading {movie_title}, please text Nino this: {str(e)}"
                 )
 
-            return response
-
+            response: Response = create_movie_response(
+                message=f"Downloading {str(movie_title, 'utf-8')} Now:), please text 'status' for further updates!"
+            )
         else:
             response: Response = create_movie_response(
-                message="Sorry something went wrong:/"
+                message=f"Sorry if we couldn't find it :/"
             )
-            return response
+
+        return response
 
     elif no:
         response: Response = create_movie_response(
-            message="Sorry:/ Please Try to Match Your Search as Close as Possible"
+            message="Sorry if we couldn't find it :/ Please Try to Match Your Search as Close as Possible"
         )
         return response
 
     elif status:
         current_status = ""
         status = torrent_client.get_status()
+
+        if not status:
+            return create_movie_response(message="No Movies Downloading...")
+
         for name, percent, time_left in status:
             current_status += f"{name}: {percent} ({time_left})\n"
 
@@ -110,6 +115,6 @@ async def search_movies(request: Request) -> Response:
 
     else:
         response: Response = create_movie_response(
-            message="Sorry Unknown Command:/ Usage: 'Search \"Movie Title\"' or 'Status'"
+            message="Sorry Unknown Command:/ Usage: Search 'Movie Title' or Status"
         )
         return response
